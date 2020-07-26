@@ -27,6 +27,10 @@ def capName( inName ):
 
     return returnName
 
+if len(sys.argv) != 3:
+    print("usage: covidPlot.py <county name> <state name>")
+    exit()
+
 cntyName = str(sys.argv[1])
 stateAbbrev = str(sys.argv[2])
 
@@ -38,16 +42,14 @@ stateAbbrev = capName(stateAbbrev)
 cntyStateName = cntyName + stateAbbrev
 
 #  Pull the updated data
-#os.chdir( "/Users/afschell/Workspaces/data/covid-19-data")
-curDir = os.getcwd()
-print(curDir)
 os.chdir( "data")
-curDir = os.getcwd()
-print(curDir)
-if os.path.isfile(".git"):
+
+if os.path.isdir("covid-19-data") and os.path.isdir("covid-19-data/.git"):
+    print( "performing pull")
     os.system( "git pull") 
 else:
     #  Otiginal git fetch is missing so clone the data
+    print("performing clone")
     os.system("git clone https://github.com/nytimes/covid-19-data.git")
 
 os.chdir (".." )
@@ -56,15 +58,15 @@ os.system (" cp data/covid-19-data/us-counties.csv ." )
 #  Strip out the desired county data
 stateLength = len(stateAbbrev)
 awkCmd= "awk -F\",\" '{ if( $2==\"" + cntyName +"\" && substr($3,1," + str(stateLength) + ")==\"" + stateAbbrev +"\") print $1\"~\"$2\"~\"$3\"~\"$5\"~\"$6 }' us-counties.csv > \"" + cntyStateName + ".strip\""
-print( awkCmd )
+#print( awkCmd )
 os.system( awkCmd ) 
-
+os.remove("us-counties.csv")
 fleName = cntyStateName + ".strip"
-print ("file name -->", fleName)
+#print ("file name -->", fleName)
 inputFile = open(fleName,"r")
 lines = inputFile.readlines()
 inputFile.close()
-print(len(lines))
+#print(len(lines))
 stateName = ""
 totalRows = 0
 dates = []
@@ -113,7 +115,7 @@ for line in lines:
 
 # put the last date on if it is greater than the 20th of a month
 popDays = int(dayDate) - 15
-print(popDays)
+#print(popDays)
 if popDays > 0 and popDays < 6:
     for i in range(0, popDays+1):
         tickLabels.pop()
@@ -136,6 +138,7 @@ plt.ylim(0, maxNewCases + 5)
 plt.xlabel(xLabel)
 plt.ylabel("new cases")
 plt.show()
+os.remove(fleName)
 
 #    print( "{0:2.0f}  ==  {1}  == {2:9.6f}%".format( float(splitLine[1]), splitLine[2], (round(totalProb,6) * 100 )) )
 
@@ -177,4 +180,3 @@ plt.ylabel("new cases")
 plt.legend()
 plt.show()
 '''
-print ("done")
