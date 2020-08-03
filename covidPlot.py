@@ -47,11 +47,14 @@ stateAbbrev = capName(stateAbbrev)
 cntyStateName = cntyName + stateAbbrev
 
 #  Pull the updated data
-os.chdir( "data")
+os.chdir("data")
 
 if os.path.isdir("covid-19-data") and os.path.isdir("covid-19-data/.git"):
+    os.chdir( "covid-19-data")
     print( "performing pull")
+#    os.system( "git pull https://github.com/nytimes/covid-19-data.git --allow-unrelated-histories") 
     os.system( "git pull") 
+    os.chdir( ".." )
 else:
     #  Otiginal git fetch is missing so clone the data
     print("performing clone")
@@ -73,7 +76,7 @@ lines = inputFile.readlines()
 inputFile.close()
 #print(len(lines))
 stateName = ""
-totalRows = 0
+totalRows = 0  
 dates = []
 cases = []
 totalCases = []
@@ -119,9 +122,13 @@ for line in lines:
     tickValue += 1
 
 # put the last date on if it is greater than the 20th of a month
+print( "dayDate --> ",dayDate) 
 popDays = int(dayDate) - 15
+if( int(dayDate) < 6 ):
+    popDays = 8
+
 #print(popDays)
-if popDays > 0 and popDays < 6:
+if popDays > 0 and popDays <= 8:
     for i in range(0, popDays+1):
         tickLabels.pop()
     for i in range(0, popDays+1):
