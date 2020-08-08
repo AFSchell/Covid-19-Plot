@@ -126,7 +126,7 @@ for line in lines:
     tickValue += 1
 
 # put the last date on if it is greater than the 20th of a month
-print( "dayDate --> ",dayDate) 
+#print( "dayDate --> ",dayDate) 
 popDays = int(dayDate) - 15
 if( int(dayDate) < 10 ):
     popDays = 10
@@ -142,9 +142,9 @@ tickLabels.pop()
 tickLabel = monDate + "/" + dayDate
 tickLabels.append( tickLabel )
 
-print( "dataCases --> ", dataCases)
-print( "deathCases -->", deathCases)
-print( "newMaxCase -->", maxNewCases)
+#print( "dataCases --> ", dataCases)
+#print( "deathCases -->", deathCases)
+#print( "newMaxCase -->", maxNewCases)
 caseLabel = "New Cases total:  " + str(dataCases)
 deathLabel = "Deaths: " + str(deathCases)
 
