@@ -81,6 +81,7 @@ dates = []
 cases = []
 totalCases = []
 totalDays = []
+totalDeaths = []
 totalTicks = []
 tickLabels = []
 data = []
@@ -88,6 +89,7 @@ dayDate = ""
 monDate = ""
 oldMonth = ""
 dataCases = 0
+deathCases = 0
 oldCases = 0
 minNewCases = 0
 maxNewCases = 0
@@ -102,6 +104,7 @@ for line in lines:
     dayDate = splitLine[0].split("-")[2]
     stateName = splitLine[2]
     dataCases = int(splitLine[3])
+    deathCases = int(splitLine[4])
     newCases = dataCases - oldCases
     if newCases > maxNewCases:
         maxNewCases = newCases
@@ -112,6 +115,7 @@ for line in lines:
     totalDate = monDate + "-" + dayDate
     totalDays.append(totalDate)
     totalCases.append( newCases)
+    totalDeaths.append( deathCases )
     totalTicks.append(tickValue)
     if oldMonth != monDate or (dayDate == "15" and totalRows > 15) :
         tickLabel = monDate + "/" + dayDate
@@ -124,11 +128,11 @@ for line in lines:
 # put the last date on if it is greater than the 20th of a month
 print( "dayDate --> ",dayDate) 
 popDays = int(dayDate) - 15
-if( int(dayDate) < 6 ):
-    popDays = 8
+if( int(dayDate) < 10 ):
+    popDays = 10
 
 #print(popDays)
-if popDays > 0 and popDays <= 8:
+if popDays > 0 and popDays <= 10:
     for i in range(0, popDays+1):
         tickLabels.pop()
     for i in range(0, popDays+1):
@@ -138,17 +142,30 @@ tickLabels.pop()
 tickLabel = monDate + "/" + dayDate
 tickLabels.append( tickLabel )
 
+print( "dataCases --> ", dataCases)
+print( "deathCases -->", deathCases)
+print( "newMaxCase -->", maxNewCases)
+caseLabel = "New Cases total:  " + str(dataCases)
+deathLabel = "Deaths: " + str(deathCases)
 
-plt.plot(totalDays, totalCases)
+plt.plot(totalDays, totalCases, label=caseLabel)
+plt.plot(totalDays, totalDeaths, label=deathLabel)
+plt.legend()
 plt.xticks(ticks = totalTicks ,labels=tickLabels)
 
 title = cntyName + " County, " + stateName + " New Covid-19 Cases (Month/Day)\n" + "source: https://github.com/nytimes/covid-19-data"
 plt.title(title)
 
 xLabel = "Date"
-plt.ylim(0, maxNewCases + 5)
+#plt.ylim(0, maxNewCases + 5)
+if( maxNewCases > deathCases):
+    yLimit = maxNewCases + 10
+else:
+    yLimit = deathCases + 10
+
+plt.ylim(0, yLimit)
 plt.xlabel(xLabel)
-plt.ylabel("new cases")
+plt.ylabel("new cases/total deaths")
 plt.show()
 os.remove(fleName)
 
