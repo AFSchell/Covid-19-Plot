@@ -145,7 +145,15 @@ tickLabels.append( tickLabel )
 #print( "dataCases --> ", dataCases)
 #print( "deathCases -->", deathCases)
 #print( "newMaxCase -->", maxNewCases)
-caseLabel = "New Cases total:  " + str(dataCases)
+
+lastDays = ""
+delim = ""
+lastDayCount = 5
+for i in range(lastDayCount):
+    lastDays = lastDays + delim + str(totalCases[len(totalCases)-(i+1)]) 
+    delim = ", "
+
+caseLabel = "New Cases total:  " + str(dataCases) + "\nLast " + str(lastDayCount) + " days (Recent First)\n" + lastDays
 deathLabel = "Deaths: " + str(deathCases)
 
 plt.plot(totalDays, totalCases, label=caseLabel)
