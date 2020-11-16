@@ -32,12 +32,13 @@ def capName( inName ):
 
     return returnName
 
-if len(sys.argv) != 3:
-    print("usage: covidPlot.py <county name> <state name>")
+if len(sys.argv) != 4:
+    print("usage: covidPlot.py <county name> <state name> <days in average>")
     exit()
 
 cntyName = str(sys.argv[1])
 stateAbbrev = str(sys.argv[2])
+nDayAverage = int(sys.argv[3])
 
 delimiter = ''
 title = ''
@@ -148,12 +149,15 @@ tickLabels.append( tickLabel )
 
 lastDays = ""
 delim = ""
-lastDayCount = 5
+lastDayCount = nDayAverage
+nAvgTotal = 0
 for i in range(lastDayCount):
+    nAvgTotal = nAvgTotal + totalCases[len(totalCases)-(i+1)]
     lastDays = lastDays + delim + str(totalCases[len(totalCases)-(i+1)]) 
     delim = ", "
 
-caseLabel = "New Cases total:  " + str(dataCases) + "\nLast " + str(lastDayCount) + " days (Recent First)\n" + lastDays
+fAverage = nAvgTotal / nDayAverage
+caseLabel = "New Cases total:  " + str(dataCases) + "\nLast " + str(lastDayCount) + " days (Recent First)\n" + lastDays + "\n average: " + "{:.1f}".format(fAverage)
 deathLabel = "Deaths: " + str(deathCases)
 
 plt.plot(totalDays, totalCases, label=caseLabel)
