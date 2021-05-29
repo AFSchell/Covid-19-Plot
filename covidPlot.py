@@ -32,13 +32,19 @@ def capName( inName ):
 
     return returnName
 
-if len(sys.argv) != 4:
-    print("usage: covidPlot.py <county name> <state name> <days in average>")
+if len(sys.argv) != 5 :
+    print("usage: covidPlot.py <county name> <state name> <days in average> <days to skip>")
     exit()
 
 cntyName = str(sys.argv[1])
 stateAbbrev = str(sys.argv[2])
+
 nDayAverage = int(sys.argv[3])
+print(" argument count --> ", len(sys.argv) )
+if len(sys.argv) == 5 :
+    nSkipDays = int(sys.argv[4])
+else:
+    nSkipDays = 200
 
 delimiter = ''
 title = ''
@@ -112,19 +118,20 @@ for line in lines:
     oldCases = dataCases
     
     totalRows += 1
-    data.append( [monDate, dayDate, newCases] )
-    totalDate = monDate + "-" + dayDate
-    totalDays.append(totalDate)
-    totalCases.append( newCases)
-    totalDeaths.append( deathCases )
-    totalTicks.append(tickValue)
-    if oldMonth != monDate or (dayDate == "15" and totalRows > 15) :
-        tickLabel = monDate + "/" + dayDate
-        oldMonth = monDate
-        tickLabels.append( tickLabel )
-    else:
-        tickLabels.append("")
-    tickValue += 1
+    if totalRows > nSkipDays :
+        data.append( [monDate, dayDate, newCases] )
+        totalDate = monDate + "-" + dayDate
+        totalDays.append(totalDate)
+        totalCases.append( newCases)
+        totalDeaths.append( deathCases )
+        totalTicks.append(tickValue)
+        if oldMonth != monDate or (dayDate == "15" and totalRows > 15) :
+            tickLabel = monDate + "/" + dayDate
+            oldMonth = monDate
+            tickLabels.append( tickLabel )
+        else:
+            tickLabels.append("")
+        tickValue += 1
 
 # put the last date on if it is greater than the 20th of a month
 #print( "dayDate --> ",dayDate) 
